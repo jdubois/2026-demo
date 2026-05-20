@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { statusLabels, statusOptions, useTicketsStore } from '@/stores/tickets'
 
 const ticketsStore = useTicketsStore()
-const { activeTickets, error, loading, openTickets, tickets, totalTickets } =
+const { activeTickets, error, loading, openTickets, tickets, totalTickets, users } =
   storeToRefs(ticketsStore)
 
 const editingId = ref(null)
@@ -13,6 +13,7 @@ const form = reactive({
   repository: '',
   link: '',
   status: 'OPEN',
+  assigneeId: '',
 })
 
 const sortedTickets = computed(() =>
@@ -23,8 +24,11 @@ const completedTickets = computed(
   () => tickets.value.filter((ticket) => ticket.status === 'DONE').length,
 )
 
-onMounted(() => {
-  ticketsStore.loadTickets()
+onMounted(async () => {
+  await ticketsStore.loadTicketBoard()
+  if (!form.assigneeId) {
+    form.assigneeId = users.value[0]?.id ?? ''
+  }
 })
 
 function statusClass(status) {
@@ -37,6 +41,7 @@ function resetForm() {
   form.repository = ''
   form.link = ''
   form.status = 'OPEN'
+  form.assigneeId = users.value[0]?.id ?? ''
 }
 
 function editTicket(ticket) {
@@ -45,6 +50,7 @@ function editTicket(ticket) {
   form.repository = ticket.repository
   form.link = ticket.link
   form.status = ticket.status
+  form.assigneeId = ticket.assignee?.id ?? ''
 }
 
 async function submitTicket() {
@@ -54,6 +60,7 @@ async function submitTicket() {
     repository: form.repository,
     link: form.link,
     status: form.status,
+    assigneeId: Number(form.assigneeId),
   })
   resetForm()
 }
@@ -136,6 +143,16 @@ async function submitTicket() {
           </select>
         </label>
 
+        <label class="form-label">
+          Assignee
+          <select v-model="form.assigneeId" class="form-select" required>
+            <option disabled value="">Select a user</option>
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ user.username }}
+            </option>
+          </select>
+        </label>
+
         <div class="form-actions">
           <button class="btn btn-primary btn-lg" type="submit">
             <i class="bi bi-check2-circle"></i>
@@ -176,6 +193,10 @@ async function submitTicket() {
               View GitHub issue
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
+            <span class="assignee-name">
+              <i class="bi bi-person-circle"></i>
+              {{ ticket.assignee?.username ?? 'Unassigned' }}
+            </span>
           </div>
 
           <div class="ticket-status">
@@ -416,6 +437,16 @@ async function submitTicket() {
 .ticket-status {
   display: flex;
   align-items: center;
+}
+
+.assignee-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 0.8rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .ticket-actions {
