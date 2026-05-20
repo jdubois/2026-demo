@@ -4,6 +4,7 @@ import {
   createTicket,
   deleteTicket,
   fetchTickets,
+  fetchUsers,
   updateTicket,
 } from '@/services/tickets'
 
@@ -19,6 +20,7 @@ export const statusLabels = {
 
 export const useTicketsStore = defineStore('tickets', () => {
   const tickets = ref([])
+  const users = ref([])
   const loading = ref(false)
   const error = ref('')
 
@@ -37,6 +39,29 @@ export const useTicketsStore = defineStore('tickets', () => {
       error.value = requestError.message
     } finally {
       loading.value = false
+    }
+  }
+
+  async function loadTicketBoard() {
+    loading.value = true
+    error.value = ''
+    try {
+      const [fetchedUsers, fetchedTickets] = await Promise.all([fetchUsers(), fetchTickets()])
+      users.value = fetchedUsers
+      tickets.value = fetchedTickets
+    } catch (requestError) {
+      error.value = requestError.message
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function loadUsers() {
+    error.value = ''
+    try {
+      users.value = await fetchUsers()
+    } catch (requestError) {
+      error.value = requestError.message
     }
   }
 
@@ -60,12 +85,15 @@ export const useTicketsStore = defineStore('tickets', () => {
   return {
     activeTickets,
     error,
+    loadTicketBoard,
     loadTickets,
+    loadUsers,
     loading,
     openTickets,
     removeTicket,
     saveTicket,
     tickets,
     totalTickets,
+    users,
   }
 })

@@ -1,7 +1,9 @@
 package com.example.ticketmanager.controller;
 
+import com.example.ticketmanager.domain.AppUser;
 import com.example.ticketmanager.domain.Ticket;
 import com.example.ticketmanager.repository.TicketRepository;
+import com.example.ticketmanager.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -23,8 +25,11 @@ class TicketController {
 
 	private final TicketRepository ticketRepository;
 
-	TicketController(TicketRepository ticketRepository) {
+	private final UserRepository userRepository;
+
+	TicketController(TicketRepository ticketRepository, UserRepository userRepository) {
 		this.ticketRepository = ticketRepository;
+		this.userRepository = userRepository;
 	}
 
 	@GetMapping
@@ -40,7 +45,7 @@ class TicketController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	Ticket create(@Valid @RequestBody TicketRequest request) {
-		return ticketRepository.save(request.toTicket());
+		return ticketRepository.save(request.toTicket(findAssignee(request.assigneeId())));
 	}
 
 	@PutMapping("/{id}")
@@ -50,6 +55,7 @@ class TicketController {
 		ticket.setRepository(request.repository());
 		ticket.setLink(request.link());
 		ticket.setStatus(request.status());
+		ticket.setAssignee(findAssignee(request.assigneeId()));
 		return ticketRepository.save(ticket);
 	}
 
@@ -66,6 +72,12 @@ class TicketController {
 		return ticketRepository
 			.findById(id)
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket not found"));
+	}
+
+	private AppUser findAssignee(Long assigneeId) {
+		return userRepository
+			.findById(assigneeId)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown assigneeId"));
 	}
 
 }
