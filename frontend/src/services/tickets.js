@@ -19,6 +19,11 @@ export async function fetchTickets() {
   return parseResponse(response)
 }
 
+export async function fetchUsers() {
+  const response = await fetch('/api/users')
+  return parseResponse(response)
+}
+
 export async function createTicket(ticket) {
   const response = await fetch('/api/tickets', {
     method: 'POST',
