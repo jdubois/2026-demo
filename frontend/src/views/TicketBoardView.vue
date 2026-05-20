@@ -4,7 +4,8 @@ import { storeToRefs } from 'pinia'
 import { statusLabels, statusOptions, useTicketsStore } from '@/stores/tickets'
 
 const ticketsStore = useTicketsStore()
-const { activeTickets, error, loading, openTickets, tickets, totalTickets } = storeToRefs(ticketsStore)
+const { activeTickets, error, loading, openTickets, tickets, totalTickets } =
+  storeToRefs(ticketsStore)
 
 const editingId = ref(null)
 const form = reactive({
@@ -18,7 +19,9 @@ const sortedTickets = computed(() =>
   [...tickets.value].sort((first, second) => first.repository.localeCompare(second.repository)),
 )
 
-const completedTickets = computed(() => tickets.value.filter((ticket) => ticket.status === 'DONE').length)
+const completedTickets = computed(
+  () => tickets.value.filter((ticket) => ticket.status === 'DONE').length,
+)
 
 onMounted(() => {
   ticketsStore.loadTickets()
@@ -60,28 +63,40 @@ async function submitTicket() {
   <main class="ticket-board">
     <section class="metrics-grid">
       <article class="metric-card glass-card">
-        <span>Total tickets</span>
-        <strong>{{ totalTickets }}</strong>
+        <div class="metric-icon"><i class="bi bi-collection"></i></div>
+        <div>
+          <span>Total tickets</span>
+          <strong>{{ totalTickets }}</strong>
+        </div>
       </article>
       <article class="metric-card glass-card">
-        <span>Open opportunities</span>
-        <strong>{{ openTickets }}</strong>
+        <div class="metric-icon"><i class="bi bi-inbox"></i></div>
+        <div>
+          <span>Open opportunities</span>
+          <strong>{{ openTickets }}</strong>
+        </div>
       </article>
       <article class="metric-card glass-card">
-        <span>In progress</span>
-        <strong>{{ activeTickets }}</strong>
+        <div class="metric-icon"><i class="bi bi-kanban"></i></div>
+        <div>
+          <span>In progress</span>
+          <strong>{{ activeTickets }}</strong>
+        </div>
       </article>
       <article class="metric-card glass-card">
-        <span>Completed</span>
-        <strong>{{ completedTickets }}</strong>
+        <div class="metric-icon"><i class="bi bi-check2-square"></i></div>
+        <div>
+          <span>Completed</span>
+          <strong>{{ completedTickets }}</strong>
+        </div>
       </article>
     </section>
 
     <section class="content-grid">
       <form class="ticket-form glass-card" @submit.prevent="submitTicket">
         <div class="section-heading">
-          <p>{{ editingId ? 'Update a contribution target' : 'Add a contribution target' }}</p>
-          <h2>{{ editingId ? 'Edit ticket' : 'New ticket' }}</h2>
+          <p>{{ editingId ? 'Change request' : 'Intake form' }}</p>
+          <h2>{{ editingId ? 'Edit ticket record' : 'Register ticket' }}</h2>
         </div>
 
         <label class="form-label">
@@ -133,15 +148,24 @@ async function submitTicket() {
       </form>
 
       <section class="ticket-list glass-card">
-        <div class="section-heading">
-          <p>GitHub tickets</p>
-          <h2>Contribution queue</h2>
+        <div class="list-toolbar">
+          <div class="section-heading">
+            <p>GitHub tickets</p>
+            <h2>Contribution queue</h2>
+          </div>
+          <span class="record-count">{{ sortedTickets.length }} records</span>
         </div>
 
         <div v-if="error" class="alert alert-danger" role="alert">{{ error }}</div>
         <div v-if="loading" class="loading-state">
           <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
           Loading tickets...
+        </div>
+
+        <div class="ticket-table-header" aria-hidden="true">
+          <span>Repository and issue</span>
+          <span>Status</span>
+          <span>Actions</span>
         </div>
 
         <article v-for="ticket in sortedTickets" :key="ticket.id" class="ticket-card">
@@ -154,11 +178,18 @@ async function submitTicket() {
             </a>
           </div>
 
-          <div class="ticket-actions">
+          <div class="ticket-status">
             <span class="status-pill" :class="statusClass(ticket.status)">
               {{ statusLabels[ticket.status] }}
             </span>
-            <button class="btn btn-outline-primary btn-sm" type="button" @click="editTicket(ticket)">
+          </div>
+
+          <div class="ticket-actions">
+            <button
+              class="btn btn-outline-primary btn-sm"
+              type="button"
+              @click="editTicket(ticket)"
+            >
               Edit
             </button>
             <button
@@ -178,64 +209,81 @@ async function submitTicket() {
 <style scoped>
 .ticket-board {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .metric-card {
-  padding: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.metric-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 0.75rem;
+  font-size: 1.05rem;
 }
 
 .metric-card span {
-  color: #6b7588;
-  font-size: 0.78rem;
+  color: #64748b;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
 }
 
 .metric-card strong {
   display: block;
-  margin-top: 0.3rem;
-  color: #1d2b4f;
-  font-size: 2.25rem;
+  margin-top: 0.15rem;
+  color: #0f172a;
+  font-size: 1.85rem;
+  font-weight: 900;
   line-height: 1;
 }
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 1.25rem;
   align-items: start;
 }
 
 .ticket-form,
 .ticket-list {
-  padding: 1.4rem;
+  padding: 1.25rem;
 }
 
 .section-heading {
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
 }
 
 .section-heading p {
   margin: 0 0 0.2rem;
-  color: #6677a0;
-  font-size: 0.78rem;
+  color: #2563eb;
+  font-size: 0.72rem;
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .section-heading h2 {
   margin: 0;
-  color: #192647;
-  font-size: 1.45rem;
+  color: #0f172a;
+  font-size: 1.18rem;
   font-weight: 900;
 }
 
@@ -248,15 +296,25 @@ async function submitTicket() {
   display: grid;
   gap: 0.35rem;
   margin-bottom: 0.9rem;
-  color: #2d3b5f;
+  color: #334155;
+  font-size: 0.9rem;
   font-weight: 800;
 }
 
 .form-control,
 .form-select {
-  border-color: #dce5f5;
-  border-radius: 0.9rem;
-  padding: 0.75rem 0.85rem;
+  color: #0f172a;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  border-radius: 0.55rem;
+  padding: 0.72rem 0.8rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.12);
 }
 
 .form-actions {
@@ -267,70 +325,121 @@ async function submitTicket() {
 }
 
 .btn {
-  border-radius: 999px;
+  border-radius: 0.55rem;
   font-weight: 800;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #635bff, #2cc59e);
-  border: 0;
-  box-shadow: 0 12px 24px rgba(99, 91, 255, 0.24);
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  box-shadow: 0 10px 18px rgba(29, 78, 216, 0.18);
 }
 
 .loading-state {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  color: #58647a;
+  color: #475569;
   font-weight: 800;
 }
 
-.ticket-card {
+.list-toolbar {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem;
-  margin-top: 0.9rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.record-count {
+  padding: 0.35rem 0.55rem;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.ticket-table-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px 150px;
+  gap: 1rem;
+  padding: 0.75rem 0.9rem;
+  color: #64748b;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ticket-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px 150px;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0.9rem;
   background: #ffffff;
-  border: 1px solid #e5ebf6;
-  border-radius: 1.15rem;
-  box-shadow: 0 12px 30px rgba(25, 39, 88, 0.08);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ticket-card:last-child {
+  border-bottom: 0;
 }
 
 .repo-name {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: #5c6b88;
-  font-size: 0.85rem;
+  color: #475569;
+  font-size: 0.82rem;
   font-weight: 900;
 }
 
 .ticket-main h3 {
   margin: 0.25rem 0 0.45rem;
-  color: #17233f;
+  color: #0f172a;
   font-size: 1.03rem;
   font-weight: 900;
 }
 
 .ticket-main a {
-  color: #4a58dc;
+  color: #2563eb;
+  font-size: 0.9rem;
   font-weight: 800;
   text-decoration: none;
 }
 
+.ticket-status {
+  display: flex;
+  align-items: center;
+}
+
 .ticket-actions {
   display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  gap: 0.45rem;
-  min-width: 128px;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
 @media (max-width: 980px) {
   .metrics-grid,
   .content-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .ticket-table-header {
+    display: none;
+  }
+
+  .ticket-card {
+    grid-template-columns: 1fr;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    margin-top: 0.75rem;
   }
 
   .ticket-form {
@@ -345,12 +454,11 @@ async function submitTicket() {
   }
 
   .ticket-card {
-    flex-direction: column;
+    gap: 0.8rem;
   }
 
   .ticket-actions {
-    align-items: flex-start;
-    flex-direction: row;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 }
