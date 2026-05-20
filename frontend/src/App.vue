@@ -6,16 +6,16 @@ import { RouterView } from 'vue-router'
   <div class="app-shell">
     <div class="hero">
       <div>
-        <p class="eyebrow">Java Open Source helper</p>
-        <h1>Good Ticket Radar</h1>
+        <p class="eyebrow">Assistant Java open source</p>
+        <h1>Radar de bons tickets</h1>
         <p class="hero-copy">
-          Curate approachable GitHub issues, track your progress, and help Java projects get
-          excellent first contributions.
+          Sélectionnez des issues GitHub accessibles, suivez votre progression et aidez les projets
+          Java à recevoir d'excellentes premières contributions.
         </p>
       </div>
       <div class="hero-badge">
         <i class="bi bi-stars"></i>
-        <span>Seeded with MCP discoveries</span>
+        <span>Alimenté par des découvertes MCP</span>
       </div>
     </div>
 

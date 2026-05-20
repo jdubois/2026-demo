@@ -9,7 +9,7 @@ async function parseResponse(response) {
 
   const payload = await response.json()
   if (!response.ok) {
-    throw new Error(payload.detail ?? payload.message ?? 'The ticket request failed.')
+    throw new Error(payload.detail ?? payload.message ?? 'La requête du ticket a échoué.')
   }
   return payload
 }
