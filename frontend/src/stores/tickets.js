@@ -11,11 +11,11 @@ import {
 export const statusOptions = ['OPEN', 'IN_PROGRESS', 'TO_REVIEW', 'DONE', 'ARCHIVED']
 
 export const statusLabels = {
-  OPEN: 'Open',
-  IN_PROGRESS: 'In progress',
-  TO_REVIEW: 'To review',
-  DONE: 'Done',
-  ARCHIVED: 'Archived',
+  OPEN: 'Ouvert',
+  IN_PROGRESS: 'En cours',
+  TO_REVIEW: 'À relire',
+  DONE: 'Terminé',
+  ARCHIVED: 'Archivé',
 }
 
 export const useTicketsStore = defineStore('tickets', () => {

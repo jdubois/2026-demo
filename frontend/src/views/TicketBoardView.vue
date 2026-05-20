@@ -72,28 +72,28 @@ async function submitTicket() {
       <article class="metric-card glass-card">
         <div class="metric-icon"><i class="bi bi-collection"></i></div>
         <div>
-          <span>Total tickets</span>
+          <span>Total des tickets</span>
           <strong>{{ totalTickets }}</strong>
         </div>
       </article>
       <article class="metric-card glass-card">
         <div class="metric-icon"><i class="bi bi-inbox"></i></div>
         <div>
-          <span>Open opportunities</span>
+          <span>Opportunités ouvertes</span>
           <strong>{{ openTickets }}</strong>
         </div>
       </article>
       <article class="metric-card glass-card">
         <div class="metric-icon"><i class="bi bi-kanban"></i></div>
         <div>
-          <span>In progress</span>
+          <span>En cours</span>
           <strong>{{ activeTickets }}</strong>
         </div>
       </article>
       <article class="metric-card glass-card">
         <div class="metric-icon"><i class="bi bi-check2-square"></i></div>
         <div>
-          <span>Completed</span>
+          <span>Terminés</span>
           <strong>{{ completedTickets }}</strong>
         </div>
       </article>
@@ -102,17 +102,17 @@ async function submitTicket() {
     <section class="content-grid">
       <form class="ticket-form glass-card" @submit.prevent="submitTicket">
         <div class="section-heading">
-          <p>{{ editingId ? 'Change request' : 'Intake form' }}</p>
-          <h2>{{ editingId ? 'Edit ticket record' : 'Register ticket' }}</h2>
+          <p>{{ editingId ? 'Demande de modification' : 'Formulaire de collecte' }}</p>
+          <h2>{{ editingId ? 'Modifier le ticket' : 'Nouveau ticket' }}</h2>
         </div>
 
         <label class="form-label">
-          Title
+          Titre
           <input v-model.trim="form.title" class="form-control" maxlength="200" required />
         </label>
 
         <label class="form-label">
-          GitHub repository
+          Dépôt GitHub
           <input
             v-model.trim="form.repository"
             class="form-control"
@@ -123,7 +123,7 @@ async function submitTicket() {
         </label>
 
         <label class="form-label">
-          GitHub issue link
+          Lien de l'issue GitHub
           <input
             v-model.trim="form.link"
             class="form-control"
@@ -135,7 +135,7 @@ async function submitTicket() {
         </label>
 
         <label class="form-label">
-          Status
+          Statut
           <select v-model="form.status" class="form-select">
             <option v-for="status in statusOptions" :key="status" :value="status">
               {{ statusLabels[status] }}
@@ -144,9 +144,9 @@ async function submitTicket() {
         </label>
 
         <label class="form-label">
-          Assignee
+          Assigné
           <select v-model="form.assigneeId" class="form-select" required>
-            <option disabled value="">Select a user</option>
+            <option disabled value="">Sélectionner un utilisateur</option>
             <option v-for="user in users" :key="user.id" :value="user.id">
               {{ user.username }}
             </option>
@@ -156,10 +156,10 @@ async function submitTicket() {
         <div class="form-actions">
           <button class="btn btn-primary btn-lg" type="submit">
             <i class="bi bi-check2-circle"></i>
-            {{ editingId ? 'Save changes' : 'Add ticket' }}
+            {{ editingId ? 'Enregistrer les modifications' : 'Ajouter le ticket' }}
           </button>
           <button v-if="editingId" class="btn btn-light btn-lg" type="button" @click="resetForm">
-            Cancel
+            Annuler
           </button>
         </div>
       </form>
@@ -167,21 +167,21 @@ async function submitTicket() {
       <section class="ticket-list glass-card">
         <div class="list-toolbar">
           <div class="section-heading">
-            <p>GitHub tickets</p>
-            <h2>Contribution queue</h2>
+            <p>Tickets GitHub</p>
+            <h2>File de contributions</h2>
           </div>
-          <span class="record-count">{{ sortedTickets.length }} records</span>
+          <span class="record-count">{{ sortedTickets.length }} enregistrements</span>
         </div>
 
         <div v-if="error" class="alert alert-danger" role="alert">{{ error }}</div>
         <div v-if="loading" class="loading-state">
           <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          Loading tickets...
+          Chargement des tickets...
         </div>
 
         <div class="ticket-table-header" aria-hidden="true">
-          <span>Repository and issue</span>
-          <span>Status</span>
+          <span>Dépôt et issue</span>
+          <span>Statut</span>
           <span>Actions</span>
         </div>
 
@@ -190,12 +190,12 @@ async function submitTicket() {
             <span class="repo-name"><i class="bi bi-github"></i>{{ ticket.repository }}</span>
             <h3>{{ ticket.title }}</h3>
             <a :href="ticket.link" target="_blank" rel="noreferrer">
-              View GitHub issue
+              Voir l'issue GitHub
               <i class="bi bi-box-arrow-up-right"></i>
             </a>
             <span class="assignee-name">
               <i class="bi bi-person-circle"></i>
-              {{ ticket.assignee?.username ?? 'Unassigned' }}
+              {{ ticket.assignee?.username ?? 'Non assigné' }}
             </span>
           </div>
 
@@ -211,14 +211,14 @@ async function submitTicket() {
               type="button"
               @click="editTicket(ticket)"
             >
-              Edit
+              Modifier
             </button>
             <button
               class="btn btn-outline-danger btn-sm"
               type="button"
               @click="ticketsStore.removeTicket(ticket.id)"
             >
-              Remove
+              Supprimer
             </button>
           </div>
         </article>
