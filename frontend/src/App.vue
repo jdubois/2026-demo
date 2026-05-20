@@ -4,20 +4,43 @@ import { RouterView } from 'vue-router'
 
 <template>
   <div class="app-shell">
-    <div class="hero">
-      <div>
-        <p class="eyebrow">Java Open Source helper</p>
-        <h1>Good Ticket Radar</h1>
-        <p class="hero-copy">
-          Curate approachable GitHub issues, track your progress, and help Java projects get
-          excellent first contributions.
-        </p>
+    <header class="enterprise-header">
+      <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="#/">
+          <span class="brand-mark" aria-hidden="true">TM</span>
+          <span>
+            <strong>Ticket Manager</strong>
+            <small>Open source intake</small>
+          </span>
+        </a>
+
+        <div class="topbar-actions">
+          <span class="environment-badge">
+            <i class="bi bi-shield-check"></i>
+            Production ready
+          </span>
+          <button class="btn btn-outline-secondary btn-sm" type="button">
+            <i class="bi bi-bell"></i>
+            Alerts
+          </button>
+        </div>
+      </nav>
+
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Java portfolio operations</p>
+          <h1>Contribution pipeline</h1>
+          <p class="hero-copy">
+            Centralize candidate issues, monitor execution status, and keep contributor work aligned
+            with project priorities.
+          </p>
+        </div>
+        <div class="hero-badge">
+          <i class="bi bi-graph-up-arrow"></i>
+          <span>Executive dashboard</span>
+        </div>
       </div>
-      <div class="hero-badge">
-        <i class="bi bi-stars"></i>
-        <span>Seeded with MCP discoveries</span>
-      </div>
-    </div>
+    </header>
 
     <RouterView />
   </div>
